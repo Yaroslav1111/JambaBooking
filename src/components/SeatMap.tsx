@@ -10,30 +10,48 @@ interface SeatMapProps {
   onSelect: (seat: Seat) => void;
 }
 
-function buildRows(seats: Seat[]): SeatPickerSeat[][] {
+function normalizePositions(values: number[]) {
+  const rounded = values.map((v) => Math.round(v));
+  const uniques = Array.from(new Set(rounded)).sort((a, b) => a - b);
+  return uniques;
+}
+
+function buildRows(seats: Seat[]): (SeatPickerSeat | null)[][] {
   const hasCoordinates = seats.some(
     (s) => s.y !== undefined && s.x !== undefined
   );
   if (hasCoordinates) {
+    const seatsWithCoords = seats.filter(
+      (s): s is Seat & { x: number; y: number } =>
+        typeof s.x === "number" && typeof s.y === "number"
+    );
+
+    const xPositions = normalizePositions(seatsWithCoords.map((s) => s.x));
+    const yPositions = normalizePositions(seatsWithCoords.map((s) => s.y));
+
     const grouped: Record<number, Seat[]> = {};
-    seats.forEach((seat) => {
-      const rowKey = seat.y ?? 0;
-      if (!grouped[rowKey]) grouped[rowKey] = [];
-      grouped[rowKey].push(seat);
+    seatsWithCoords.forEach((seat) => {
+      const yIndex = yPositions.indexOf(Math.round(seat.y));
+      if (!grouped[yIndex]) grouped[yIndex] = [];
+      grouped[yIndex].push(seat);
     });
 
     const yKeys = Object.keys(grouped)
       .map((v) => Number(v))
       .sort((a, b) => a - b);
 
-    const maxX = seats.reduce((acc, seat) => Math.max(acc, seat.x ?? 0), 0);
-
-    return yKeys.map((y) => {
-      const rowSeats: (SeatPickerSeat | null)[] = Array(maxX + 1).fill(null);
-      grouped[y]
-        .sort((a, b) => (a.x ?? 0) - (b.x ?? 0))
+    return yKeys.map((yKey) => {
+      const rowSeats: (SeatPickerSeat | null)[] = Array(xPositions.length).fill(
+        null
+      );
+      grouped[yKey]
+        .sort(
+          (a, b) =>
+            xPositions.indexOf(Math.round(a.x)) -
+            xPositions.indexOf(Math.round(b.x))
+        )
         .forEach((seat) => {
-          const xIndex = Math.max(0, Math.round(seat.x ?? 0));
+          const xIndex = xPositions.indexOf(Math.round(seat.x));
           rowSeats[xIndex] = {
             id: seat.id,
             number: seat.label,
@@ -43,7 +61,7 @@ function buildRows(seats: Seat[]): SeatPickerSeat[][] {
             priceTag: `${seat.price}₺`,
           } as SeatPickerSeat & { status: SeatStatus; priceTag: string };
         });
-      return rowSeats as SeatPickerSeat[];
+      return rowSeats;
     });
   }
 
