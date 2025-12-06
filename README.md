@@ -32,6 +32,8 @@ Visit http://localhost:3000.
 Columns (row 1 header):
 `seat_id`, `label`, `status`, `price`, `x`, `y`.
 
+You can start from `seating-layout-template.csv` in the repo root: import it into your `Seats` tab (keep row 1 as headers). The coordinates are pre-arranged around a central stage to mirror the attached plan; modify labels/prices/x/y as you like, and statuses default to `free`.
+
 ### Bookings sheet
 Columns (row 1 header):
 `reservation_id`, `seat_id`, `name`, `surname`, `people_count`, `phone`, `timestamp`, `status`.
@@ -46,3 +48,4 @@ Columns (row 1 header):
 - Missing environment variables cause API handlers to fail fast with clear errors.
 - Seat status is re-read on each reservation attempt to avoid double booking; non-free seats return HTTP 409.
 - Adjust seat coordinates/prices directly in the `Seats` sheet to rearrange the map.
+- Coordinates are normalized by unique X/Y ordering, so even large or negative values keep their relative placement without collapsing to the top-left corner.

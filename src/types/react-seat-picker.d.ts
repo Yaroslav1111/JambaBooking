@@ -11,7 +11,7 @@ declare module "react-seat-picker" {
   }
 
   export interface SeatPickerProps {
-    rows: Seat[][];
+    rows: (Seat | null)[][];
     maxReservableSeats?: number;
     alpha?: boolean;
     selectedByDefault?: string | number | null;
