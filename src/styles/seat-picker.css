@@ -1,0 +1,42 @@
+/* src/styles/seat-picker.css */
+/* Минимальные стили, чтобы сетка выглядела нормально */
+
+.seat-picker {
+  display: inline-block;
+  padding: 8px;
+}
+
+.seat-picker-row {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.seat-picker-seat {
+  min-width: 32px;
+  min-height: 32px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.seat-picker-seat.available {
+  background-color: #e6ffed;
+}
+
+.seat-picker-seat.unavailable {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+  color: #999;
+}
+
+.seat-picker-seat.selected {
+  background-color: #cce4ff;
+  border-color: #3b82f6;
+}
+
+/* Просто базовая косметика — дальше можешь всё заменить своим дизайном */
