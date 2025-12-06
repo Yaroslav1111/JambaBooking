@@ -1,8 +1,9 @@
 "use client";
 
 import SeatPicker, { Seat as SeatPickerSeat } from "react-seat-picker";
-import "react-seat-picker/dist/react-seat-picker.css";
+import "../styles/seat-picker.css";
 import { useMemo } from "react";
+
 import type { Seat } from "@/types";
 
 interface SeatMapProps {
